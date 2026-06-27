@@ -231,9 +231,6 @@ The bot decision must be mapped back into the game engine. Use the returned valu
 
 </div>
 
-**📍 Exact File Location:**
-- `README_C_PORT_AGENT.md` (located at: `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\README_C_PORT_AGENT.md`)
-
 ---
 
 ## 🚨 The Most Crucial Detail
@@ -251,11 +248,11 @@ Simply having the C files is never enough. For a functional C integration, the d
 
 Before doing anything, the agent must read and understand these core files:
 
-- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.h`
-- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.c`
-- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\example_adapter.c`
-- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ntl_bot_core.js`
-- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ORIGIN_MAP.md`
+- `c-bot-port\ntl_bot_core.h`
+- `c-bot-port\ntl_bot_core.c`
+- `c-bot-port\example_adapter.c`
+- `js-bot-logic\ntl_bot_core.js`
+- `js-bot-logic\ORIGIN_MAP.md`
 
 ---
 
