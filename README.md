@@ -1,6 +1,6 @@
 
 
-```markdown
+
 <div align="center">
 
 # 🐍 NTL Bot Script
@@ -58,7 +58,7 @@ The food logic works by:
 ```math
 \text{Score} = \frac{\text{mass}^2}{\text{distance}}
 
-```
+
 
 *The bot then selects the best available food target based on safety and value.*
 
