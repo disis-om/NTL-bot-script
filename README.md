@@ -451,10 +451,13 @@ gcc example_adapter.c ntl_bot_core.c -lm -o ntl_bot_demo
 
 <br>
 
+<br>
+
 <div align="right">
-  <b>— OM RAJPUT</b>
-</div>
-<div align="right">
-  <b>Full-Stack Developer</b>
+  <b>— OM RAJPUT</b><br>
+  <i>Full-Stack Developer</i><br>
+  <sup>
+    🌐 <a href="https://www.omrajput.in">omrajput.in</a> &nbsp; | &nbsp; ✉️ <a href="mailto:ommanav.mail@gmail.com">Mail@omrajput</a>
+  </sup>
 </div>
 
