@@ -1,6 +1,3 @@
-
-
-
 <div align="center">
 
 # 🐍 NTL Bot Script
@@ -57,45 +54,36 @@ The food logic works by:
 
 ```math
 \text{Score} = \frac{\text{mass}^2}{\text{distance}}
-
-
-
+```
 *The bot then selects the best available food target based on safety and value.*
 
 ### 3. Own-Body Follow / Circle Mode
-
 This is the survival-focused part of the bot. The bot:
-
-* Rebuilds its own body path
-* Finds the nearest path point
-* Samples a point slightly ahead on the body path
-* Calculates tangent and normal vectors
-* Creates a follow target using a side offset
+*   Rebuilds its own body path
+*   Finds the nearest path point
+*   Samples a point slightly ahead on the body path
+*   Calculates tangent and normal vectors
+*   Creates a follow target using a side offset
 
 **This allows the snake to:**
-
-* Move in a controlled way around its own body
-* Maintain a tight orbit
-* Shift from food targeting mode into body-follow mode when needed
+*   Move in a controlled way around its own body
+*   Maintain a tight orbit
+*   Shift from food targeting mode into body-follow mode when needed
 
 ### 4. Escape Heading Selection
-
 The bot checks the openings found inside the angular bins. It then:
-
-* Chooses the largest open arc when possible
-* Falls back to the safest available heading when no clear opening exists
+*   Chooses the largest open arc when possible
+*   Falls back to the safest available heading when no clear opening exists
 
 *This gives the bot a reliable escape direction during dangerous situations.*
 
 ### 5. Boost Decisions
-
 Boosting becomes useful when:
+*   An enemy head is an immediate threat
+*   The surrounding occupancy is high
+*   The escape path needs to be cleared quickly
 
-* An enemy head is an immediate threat
-* The surrounding occupancy is high
-* The escape path needs to be cleared quickly
-
-> [!NOTE]
+> [!NOTE]  
 > Boost is not treated as a constant action. It is used as a tactical escape or survival tool.
 
 ---
@@ -107,7 +95,6 @@ Boosting becomes useful when:
 ### Expected Runtime Input
 
 **`self`**
-
 ```json
 {
   "id": "...",
@@ -121,11 +108,9 @@ Boosting becomes useful when:
   "segments": [],
   "lengthScore": 0.0
 }
-
 ```
 
 **`world`**
-
 ```json
 {
   "foods": [],
@@ -133,20 +118,16 @@ Boosting becomes useful when:
   "center": {},
   "radius": 0.0
 }
-
 ```
 
 ### Usage
-
 ```javascript
 import { updateNtlBot } from "./ntl_bot_core.js";
 
 const decision = updateNtlBot(world, self, config);
-
 ```
 
 ### Output
-
 ```json
 {
   "mode": "...",
@@ -154,7 +135,6 @@ const decision = updateNtlBot(world, self, config);
   "aimAngle": 0.0,
   "boost": false
 }
-
 ```
 
 ---
@@ -162,12 +142,10 @@ const decision = updateNtlBot(world, self, config);
 ## 🛠️ Implementation in C
 
 **Main Files:**
-
-* `ntl_bot_core.h`
-* `ntl_bot_core.c`
+*   `ntl_bot_core.h`
+*   `ntl_bot_core.c`
 
 ### Integration Flow
-
 1. Fill the `self` snake data from your game runtime
 2. Fill the `enemy snakes` array
 3. Fill the `food` list
@@ -180,28 +158,25 @@ const decision = updateNtlBot(world, self, config);
 
 ## ⚠️ What You Need to Understand Before Porting JS to C
 
-> [!WARNING]
+> [!WARNING]  
 > A direct copy-paste conversion is not enough.
 
 The original NTL bot depended on:
-
-* Browser globals
-* Slither runtime variables
-* Minified variable names
-* The original mod environment
+*   Browser globals
+*   Slither runtime variables
+*   Minified variable names
+*   The original mod environment
 
 **For the C port, the logic has been cleaned and separated properly:**
-
-* Runtime structs were created
-* Geometry helpers were isolated
-* Danger scanning was converted into pure functions
-* Food scanning was converted into pure functions
-* The adapter layer was kept game-specific
+*   Runtime structs were created
+*   Geometry helpers were isolated
+*   Danger scanning was converted into pure functions
+*   Food scanning was converted into pure functions
+*   The adapter layer was kept game-specific
 
 *This makes the bot logic easier to test, port, and integrate into other runtimes (like C).*
 
 ### Original NTL Function Map
-
 See: `ORIGIN_MAP.md`
 
 ---
@@ -211,40 +186,40 @@ See: `ORIGIN_MAP.md`
 If vlither is written in C, real integration would happen in two layers.
 
 ### Layer 1: Adapter Layer
-
 You need to extract the following data from vlither:
-
-* Current player head position
-* Player body segments
-* Enemy snakes
-* Enemy headings and speeds
-* Food positions and mass
-* World center and radius
+*   Current player head position
+*   Player body segments
+*   Enemy snakes
+*   Enemy headings and speeds
+*   Food positions and mass
+*   World center and radius
 
 *The adapter layer is responsible for converting game-specific data into the clean bot input format.*
 
 ### Layer 2: Control Output Layer
-
 The bot decision must be mapped back into the game engine. Use the returned values like this:
-
-* `aimAngle` ➔ turn packet / steering variable
-* `target` ➔ desired world coordinate
-* `boost` ➔ sprint / acceleration flag
+*   `aimAngle` ➔ turn packet / steering variable
+*   `target` ➔ desired world coordinate
+*   `boost` ➔ sprint / acceleration flag
 
 *This keeps the bot brain separate from the actual game controls.*
 
 ---
 
-> [!IMPORTANT]
+> [!IMPORTANT]  
 > ### Important Note
+> This folder is meant for bot logic extraction and clean porting. 
 > 
-> 
-> This folder is meant for bot logic extraction and clean porting.
 > **It is not:**
-> * An exact recreation of the original extension
-> * A UI mod clone
-> * A browser injector
-> * A full NTL replacement
-> 
+> *   An exact recreation of the original extension
+> *   A UI mod clone
+> *   A browser injector
+> *   A full NTL replacement
 > 
 > This project specifically focuses on isolating the bot brain and making it easier to understand, port, and integrate.
+
+<br>
+
+<div align="right">
+  <b>— OM RAJPUT</b>
+</div>
