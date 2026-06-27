@@ -176,8 +176,74 @@ The original NTL bot depended on:
 
 *This makes the bot logic easier to test, port, and integrate into other runtimes (like C).*
 
-### Original NTL Function Map
-See: `ORIGIN_MAP.md`
+
+ <div>
+
+# 🗺️ NTL Bot Origin Map
+*The Function Decryption & Extraction Map for the NTL Bot Core*
+
+</div>
+
+> **📍 Source Location:**
+> This folder represents the pure, bot-only logic extracted directly from:
+> `ntl\main-mt.js`
+
+---
+
+## 🧩 Core Logic Modules
+
+The original obfuscated source code relies on two primary namespaces:
+
+*   🤖 **`tf`** ➔ The **Bot Controller** (Decision making, state management, and actions)
+*   📐 **`dA`** ➔ The **Geometry & Math Helpers** (Aiming, distances, and collision algorithms)
+
+---
+
+## 🔍 Obfuscated Function Mapping
+
+Below is the translation matrix detailing what each minified NTL function actually does in the extracted logic.
+
+### 🤖 Bot Controller (`tf`)
+| Original Function | Extracted Meaning / Action |
+| :--- | :--- |
+| `tf.go()` | 🧠 **Main Bot Tick:** The primary decision loop and entry point. |
+| `tf.Ye()` | 📡 **Threat Radar:** Scans for nearby enemy threats and body segments. |
+| `tf.ve()` | 🛑 **Evasive Maneuver:** Immediate, close-quarters collision avoidance. |
+| `tf.ne()` | 🚪 **Occupancy Escape:** Calculates escape routes based on spatial density. |
+| `tf.Vf()` | 🍎 **Food Targeting:** Identifies and targets optimal food clusters. |
+| `tf.Zf()` | 📊 **Food Scoring:** Evaluates per-food value (distance vs. mass). |
+| `tf.Re()` | 🐍 **Path Reconstruction:** Rebuilds the bot's own body coordinate path. |
+| `tf.Ae()` | 📍 **Nearest Body Point:** Finds the closest point on its own body path. |
+| `tf.ee()` | 🔄 **Ouroboros Mode:** Own-body following and defensive circling behavior. |
+| `tf.he()` | 🧭 **Heading Selection:** Chooses the safest, most open escape angle. |
+| `tf.ye()` | ↩️ **Threat Evasion:** Steers the head away from an incoming threat. |
+| `tf.je()` | 📐 **Angular Binning:** Writes detected obstacles into directional angular bins. |
+| `tf.Te()` | 🌀 **Circle Direction:** Decides whether to turn left or right for circle mode. |
+
+### 📐 Geometry & Helpers (`dA`)
+| Original Function | Extracted Meaning / Action |
+| :--- | :--- |
+| `dA.Yf()` | 📏 **Squared Distance:** Fast distance calculation (without `sqrt`). |
+| `dA.Nf()` | 💥 **Circle Collision:** Calculates circle-circle intersection / merge points. |
+| `dA.Sf()` | 🔺 **Point-in-Polygon:** Checks if a coordinate lies inside a defined area. |
+| `dA.Ef()` | 🔲 **Polygon Bounds:** Calculates the bounding box of a polygon shape. |
+| `dA.Rf()` | 🛡️ **Convex Hull:** Generates the outermost boundary points of a cluster. |
+| `dA.U()` | 🎯 **Write Aim Vector:** Sets the final movement vector. |
+| `dA.Y()` | 🌐 **World to Relative:** Converts a world coordinate target into a relative aiming angle. |
+
+---
+
+> [!IMPORTANT]  
+> ### 📝 Architectural Notes
+> - **Not a 1:1 Dump:** The cleaned JavaScript file is *not* a byte-for-byte copy of the original minified code. 
+> - **Pure Logic Preservation:** It is a structural rewrite designed specifically to preserve the core behavioral classes:
+>   - Danger Scanning
+>   - Food Scoring
+>   - Own-Body Circling
+>   - Escape Heading Selection
+> - **Stripped Dependencies:** All browser-specific and UI-related logic was intentionally stripped out to make the bot brain 100% portable.
+
+<br>
 
 ---
 
@@ -301,11 +367,11 @@ Be prepared to patch the following engine-specific discrepancies:
 I have an extracted NTL bot core that already exists in both JavaScript and C. I do NOT want a new game, server, UI, or extension clone. I only want the bot logic integrated into my existing C codebase.
 
 Please read these files first:
-- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.h
-- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.c
-- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\example_adapter.c
-- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ntl_bot_core.js
-- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ORIGIN_MAP.md
+- c-bot-port\ntl_bot_core.h
+- c-bot-port\ntl_bot_core.c
+- c-bot-port\example_adapter.c
+- js-bot-logic\ntl_bot_core.js
+- js-bot-logic\ORIGIN_MAP.md
 
 Then inspect my target C project and do the following:
 
