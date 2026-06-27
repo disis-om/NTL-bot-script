@@ -1,211 +1,224 @@
-# NTL bot script
+# NTL Bot Script
 
-Exact folder location:
 
-- [NTL bot script](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script>)
+This folder contains only the extracted bot brain from the NTL mod.
 
-This folder contains only the bot brain extracted from the local NTL mod copy.
+## Source Used
 
-Source used:
+- `NTL\main-mt.js`
 
-- `C:\Users\Om Rajput\Desktop\slitherport-io\ntl\main-mt.js`
+---
 
-What is intentionally removed:
+# What This Bot Logic Script Contains
 
-- extension popup logic
-- chrome API glue
-- UI / overlay / drag button / keybind code
-- settings panels
-- chat / cosmetic / menu logic
+This script isolates the core bot logic from the original NTL bot brain.
 
-What is kept:
+It includes:
 
-- danger detection
-- enemy head prediction
-- body-segment collision scan
-- angular occupancy map
-- escape heading selection
-- food scoring and targeting
-- own-body follow / circling
-- boost decision hooks
+- Danger detection
+- Enemy head prediction
+- Body-segment collision scanning
+- Angular occupancy mapping
+- Escape heading selection
+- Food scoring and targeting
+- Own-body following / circling behavior
+- Boost decision hooks
 
-## Folder structure
+---
 
-- `js-bot-logic/`
-  - [ntl_bot_core.js](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ntl_bot_core.js>)
-  - [ORIGIN_MAP.md](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ORIGIN_MAP.md>)
-- `c-bot-port/`
-  - [ntl_bot_core.h](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.h>)
-  - [ntl_bot_core.c](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.c>)
-  - [example_adapter.c](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\example_adapter.c>)
+# What Is Inside the Bot Logic
 
-## Bot logic me kya kya hai
+## 1. Danger Detection
 
-### 1. Danger detect karna
+The following behavior was extracted from the original NTL bot brain:
 
-Original NTL bot ke bot-brain se ye behavior nikala gaya:
+- Projecting enemy heads slightly forward
+- Collecting body segments inside the scan zone
+- Registering each threat into angular bins
+- Sorting the nearest collision threats
 
-- enemy head ko thoda forward project karna
-- body segments ko scan zone me collect karna
-- har threat ko angular bins me register karna
-- nearest collision threats ko sort karna
+This helps the bot understand:
 
-Isse bot ko pata chalta hai:
+- Whether there is a crash risk ahead
+- Which side is more blocked
+- Which direction is relatively open and safer
 
-- samne crash risk hai ya nahi
-- kis side zyada blocked hai
-- kaunsi direction relatively open hai
+---
 
-### 2. Food targeting
+## 2. Food Targeting
 
-Food logic:
+The food logic works by:
 
-- nearby food evaluate karta hai
-- angle aur danger bins dekh kar risky food reject karta hai
-- `mass^2 / distance` jaisa score use karta hai
-- best target choose karta hai
+- Evaluating nearby food
+- Checking angle and danger bins before targeting food
+- Rejecting risky food paths
+- Using a score similar to:
 
-### 3. Own body follow / circle mode
+```txt
+mass² / distance
 
-Ye bot ka survival-oriented part hai.
+The bot then selects the best available food target based on safety and value.
 
-Bot:
+3. Own-Body Follow / Circle Mode
 
-- apni body path rebuild karta hai
-- nearest path point dhoondta hai
-- thoda aage ka path sample karta hai
-- tangent aur normal vector nikalta hai
-- side offset ke saath follow target banata hai
+This is the survival-focused part of the bot.
 
-Isse snake:
+The bot:
 
-- apni body ke around controlled movement karta hai
-- tight orbit maintain kar sakta hai
-- food mode se body-follow mode me shift kar sakta hai
+Rebuilds its own body path
+Finds the nearest path point
+Samples a point slightly ahead on the body path
+Calculates tangent and normal vectors
+Creates a follow target using a side offset
 
-### 4. Escape heading selection
+This allows the snake to:
 
-Angular bins me jo openings milti hain, unme se:
+Move in a controlled way around its own body
+Maintain a tight orbit
+Shift from food targeting mode into body-follow mode when needed
 
-- sabse bada open arc choose hota hai
-- warna safest fallback heading li jaati hai
 
-### 5. Boost decisions
+4. Escape Heading Selection
 
-Boost useful hota hai jab:
+The bot checks the openings found inside the angular bins.
 
-- enemy head immediate threat ho
-- occupancy high ho
-- escape path ko jaldi clear karna ho
+It then:
 
-## JS implementation kaise use karna hai
+Chooses the largest open arc when possible
+Falls back to the safest available heading when no clear opening exists
 
-Main file:
+This gives the bot a reliable escape direction during dangerous situations.
 
-- [ntl_bot_core.js](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ntl_bot_core.js>)
+5. Boost Decisions
 
-Expected runtime input:
+Boosting becomes useful when:
 
-- `self`
-  - `id`
-  - `x`, `y`
-  - `fx`, `fy`
-  - `heading`
-  - `speed`
-  - `mass`
-  - `segments`
-  - optional `lengthScore`
-- `world`
-  - `foods`
-  - `enemySnakes`
-  - optional `center` / `radius`
+An enemy head is an immediate threat
+The surrounding occupancy is high
+The escape path needs to be cleared quickly
 
-Call:
+Boost is not treated as a constant action.
+It is used as a tactical escape or survival tool.
 
-```js
+JavaScript Implementation
+Main File
+ntl_bot_core.js
+Expected Runtime Input
+self
+{
+  id,
+  x,
+  y,
+  fx,
+  fy,
+  heading,
+  speed,
+  mass,
+  segments,
+  lengthScore // optional
+}
+world
+{
+  foods,
+  enemySnakes,
+  center, // optional
+  radius  // optional
+}
+Usage
 import { updateNtlBot } from "./ntl_bot_core.js";
 
 const decision = updateNtlBot(world, self, config);
-```
+Output
+{
+  mode,
+  target: { x, y },
+  aimAngle,
+  boost
+}
 
-Output:
+Implementation in C
 
-- `mode`
-- `target { x, y }`
-- `aimAngle`
-- `boost`
 
-## C implementation kaise use karna hai
+Main Files : 
+ntl_bot_core.h
+ntl_bot_core.c
 
-Main files:
+Integration Flow
+Fill the self snake data from your game runtime
+Fill the enemy snakes array
+Fill the food list
+Call ntl_bot_update()
+Map the returned target and angle back into the game engine input
 
-- [ntl_bot_core.h](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.h>)
-- [ntl_bot_core.c](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.c>)
+Example Starter
+example_adapter.c
 
-Integration flow:
 
-1. Apne game runtime se self snake fill karo
-2. Enemy snakes array fill karo
-3. Food list fill karo
-4. `ntl_bot_update()` call karo
-5. Returned target aur angle ko engine input me map karo
+What You Need to Understand Before Porting JS to C
 
-Example starter:
+A direct copy-paste conversion is not enough.
 
-- [example_adapter.c](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\example_adapter.c>)
+The original NTL bot depended on:
 
-## JS se C me lane ke liye kya samajhna zaroori hai
+Browser globals
+Slither runtime variables
+Minified variable names
+The original mod environment
 
-Direct copy-paste conversion enough nahi hoti, kyunki original NTL bot:
+For the C port, the logic has been cleaned and separated properly:
 
-- browser globals use karta tha
-- Slither runtime variable layout pe depend karta tha
-- minified names use karta tha
+Runtime structs were created
+Geometry helpers were isolated
+Danger scanning was converted into pure functions
+Food scanning was converted into pure functions
+The adapter layer was kept game-specific
 
-C port me clean separation ki gayi:
+This makes the bot logic easier to test, port, and integrate into other runtimes (like C).
 
-- runtime structs banaye
-- geometry helpers alag kiye
-- danger scan aur food scan ko pure functions banaya
-- adapter layer ko game-specific rakha
-
-## Original NTL function map
+Original NTL Function Map
 
 See:
 
-- [ORIGIN_MAP.md](<C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ORIGIN_MAP.md>)
+ORIGIN_MAP.md
+How This Would Be Implemented in a C Game Like Vlither
 
-## Vlither jaisa C game me implement kaise hoga
+If vlither is written in C, real integration would happen in two layers.
 
-Agar `vlither` C me hai, to real integration 2 layers me hoga:
+Layer 1: Adapter Layer
 
-### Layer 1: Adapter
+You need to extract the following data from vlither:
 
-Tumhe vlither se ye data nikalna hoga:
+Current player head position
+Player body segments
+Enemy snakes
+Enemy headings and speeds
+Food positions and mass
+World center and radius
 
-- current player head position
-- body segments
-- enemy snakes
-- enemy headings / speeds
-- food positions and mass
-- world center / radius
+The adapter layer is responsible for converting game-specific data into the clean bot input format.
 
-### Layer 2: Control output
+Layer 2: Control Output Layer
 
-Bot decision ko map karo:
+The bot decision must be mapped back into the game engine.
 
-- `aimAngle` -> turn packet / steering variable
-- `target` -> desired world coordinate
-- `boost` -> sprint / accelerate flag
+Use the returned values like this:
 
-## Important note
+aimAngle -> turn packet / steering variable
+target -> desired world coordinate
+boost -> sprint / acceleration flag
 
-Ye folder bot logic extraction aur clean port ke liye hai.
+This keeps the bot brain separate from the actual game controls.
 
-Ye:
+Important Note
 
-- exact extension recreation nahi hai
-- UI mod clone nahi hai
-- browser injector nahi hai
+This folder is meant for bot logic extraction and clean porting.
 
-Ye specifically bot brain isolate karne ke liye banaya gaya hai.
+It is not:
+
+An exact recreation of the original extension
+A UI mod clone
+A browser injector
+A full NTL replacement
+
+This project specifically focuses on isolating the bot brain and making it easier to understand, port, and integrate. 
+                                                                                          -- OM RAJPUT
