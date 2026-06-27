@@ -220,6 +220,178 @@ The bot decision must be mapped back into the game engine. Use the returned valu
 
 <br>
 
+<div align="center">
+
+# 🤖 C Port Integration Guide for Agents
+*The definitive guide for integrating the NTL Bot Core into C-based runtimes.*
+
+![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![AI Agent](https://img.shields.io/badge/AI_Agent-Ready-8A2BE2?style=for-the-badge&logo=openai&logoColor=white)
+![Integration](https://img.shields.io/badge/Integration-Pipeline-2ea44f?style=for-the-badge)
+
+</div>
+
+**📍 Exact File Location:**
+- `README_C_PORT_AGENT.md` (located at: `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\README_C_PORT_AGENT.md`)
+
+---
+
+## 🚨 The Most Crucial Detail
+
+Simply having the C files is never enough. For a functional C integration, the developer or AI agent **must** execute the following:
+
+- Map the target game's runtime data into the bot's structs.
+- Call the bot function on every single tick/frame/update.
+- Convert the bot's decision into the game's native steering, turning, and boost mechanics.
+- Handle compilation issues, include paths, and engine-specific architectural differences.
+
+---
+
+## 📂 Essential Files to Analyze
+
+Before doing anything, the agent must read and understand these core files:
+
+- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.h`
+- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.c`
+- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\example_adapter.c`
+- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ntl_bot_core.js`
+- `C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ORIGIN_MAP.md`
+
+---
+
+## ⚙️ Execution Pipeline: How to Actually Run the C Port
+
+### 1. Build the Adapter Layer
+You must extract the following values from the target C game:
+- Player head position, heading, speed, and mass / length score
+- Player body segments
+- Enemy snakes array (headings & speeds)
+- Food list
+- World center & radius
+
+*Map all of this data into `NtlSnakeView`, `NtlFoodView`, and `NtlWorldView`.*
+
+### 2. Wire the Bot Tick
+Inside every game update loop, follow this sequence:
+1. Extract a runtime snapshot.
+2. Initialize `ntl_bot_default_config()` (or use a custom config).
+3. Call `ntl_bot_update()`.
+4. Map the returned `NtlBotDecision` back into the engine controls.
+
+### 3. Translate the Output
+The `NtlBotDecision` struct must be mapped as follows:
+- `aim_angle` ➔ Left/right turning logic or direct steering target.
+- `target.x`, `target.y` ➔ World-space navigation target.
+- `boost` ➔ Sprint / accelerate / turbo toggle flag.
+- `mode` ➔ Reference for debugging or behavior switching.
+
+### 4. Handle Engine-Specific Quirks
+Be prepared to patch the following engine-specific discrepancies:
+- Coordinate system alignment.
+- Angle conventions (Radians vs Degrees, offset logic).
+- Speed unit synchronization.
+- Body segment layout adaptations.
+- Compilation flags and math library linking (`-lm`).
+
+---
+
+## 📋 Agent Prompt (Copy & Paste)
+
+> [!TIP]
+> If you are using an AI Agent (like Trae, Cursor, or Claude), copy and paste this exact prompt to get perfect results.
+
+```text
+I have an extracted NTL bot core that already exists in both JavaScript and C. I do NOT want a new game, server, UI, or extension clone. I only want the bot logic integrated into my existing C codebase.
+
+Please read these files first:
+- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.h
+- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\ntl_bot_core.c
+- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\c-bot-port\example_adapter.c
+- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ntl_bot_core.js
+- C:\Users\Om Rajput\Desktop\slitherport-io\NTL bot script\js-bot-logic\ORIGIN_MAP.md
+
+Then inspect my target C project and do the following:
+
+1. Find the game loop / bot tick / update loop.
+2. Find the structs or variables that represent:
+   - player head position
+   - player heading
+   - player speed
+   - player mass or length
+   - player body segments
+   - enemy snakes
+   - enemy body segments
+   - food items
+   - world center and radius
+3. Create an adapter layer that converts my engine data into:
+   - NtlSnakeView
+   - NtlFoodView
+   - NtlWorldView
+4. Call ntl_bot_update() every update tick.
+5. Convert NtlBotDecision back into my engine controls:
+   - aim_angle -> steering / turn input
+   - target -> world target if needed
+   - boost -> acceleration flag
+6. Keep the bot brain logic intact as much as possible. Only change the C core if required for compilation or engine compatibility.
+7. If compile errors happen, fix them in a minimal way and explain each fix.
+8. If some engine data is missing, identify exactly what is missing and where it should come from.
+
+Important constraints:
+- Do not build a new game.
+- Do not build a new server.
+- Do not add unrelated UI.
+- Focus only on integrating the NTL bot logic into the existing C project.
+- Reuse ntl_bot_core.h and ntl_bot_core.c instead of rewriting the bot from scratch.
+
+Deliverables I want from you:
+- adapter source/header files
+- the exact engine files you changed
+- the integration points you used
+- any compile commands or build changes needed
+- a short explanation of how the bot now works inside the C project
+```
+
+### 🎯 Targeting a 'Vlither' Style Project?
+If the target game is heavily inspired by Slither (like `vlither`), append this line to the bottom of the prompt above:
+
+```text
+This target project is a Slither-like C game. Please preserve its existing movement and packet/input flow, and fit the bot into the current runtime rather than replacing the control architecture.
+```
+
+---
+
+## 🛠️ Expected Agent Deliverables
+A highly capable agent will typically execute the following:
+*   Inspect the existing runtime architecture.
+*   Generate the necessary adapter files.
+*   Identify the exact integration point for the bot tick.
+*   Resolve compilation errors seamlessly.
+*   Map the steering outputs accurately.
+*   Provide a comprehensive list of all modified files.
+
+---
+
+## 🧪 Manual Compilation Test
+> [!WARNING]  
+> This is strictly for basic sample testing, not for the final engine integration.
+
+```bash
+gcc example_adapter.c ntl_bot_core.c -lm -o ntl_bot_demo
+```
+*(This command will work similarly in Windows MinGW provided `gcc` is available in your PATH).*
+
+---
+
+> [!IMPORTANT]  
+> ### 💡 The Bottom Line
+> The true challenge of a C port isn't "rewriting the bot logic"—it's **building the correct adapter** to fit seamlessly into the existing engine. This guide is explicitly designed to point AI agents in that exact right direction.
+
+<br>
+
+<div align="right">
+  <b>— OM RAJPUT</b>
+</div>
+
 <div align="right">
   <b>— OM RAJPUT</b>
 </div>
