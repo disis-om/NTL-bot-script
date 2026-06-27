@@ -388,7 +388,7 @@ gcc example_adapter.c ntl_bot_core.c -lm -o ntl_bot_demo
 <div align="right">
   <b>— OM RAJPUT</b>
 </div>
-
 <div align="right">
-  <b>— OM RAJPUT</b>
+  <b>Full-Stack Developer</b>
 </div>
+
